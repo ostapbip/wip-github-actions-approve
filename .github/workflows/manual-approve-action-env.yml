@@ -1,0 +1,32 @@
+name: Manual Approval via Action with Env
+
+on:
+  workflow_dispatch:
+
+jobs:
+  first-step:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Always run — Step 1
+        run: |
+          echo "✅ Step 1 completed: Initial processing done."
+
+  manual-approval:
+    needs: first-step
+    runs-on: ubuntu-latest
+    environment: stage
+    permissions:
+      issues: write
+    steps:
+      - name: Wait for manual approval
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: ostapbip
+          minimum-approvals: 1
+          issue-title: "Deploying insurance-app to prod"
+          issue-body: "Please approve or deny the deployment of insurance-app."
+
+      - name: Step 2 — Runs after approval
+        run: |
+          echo "🚀 Step 2: Deployment approved and proceeding!"
