@@ -1,0 +1,21 @@
+name: Manual Approval via Environment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  first-step:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Always run — Step 1
+        run: |
+          echo "✅ Step 1 completed: Initial processing done."
+
+  manual-approval-and-deploy:
+    needs: first-step
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Step 2 — Runs after approval
+        run: |
+          echo "🚀 Step 2: Deploying after manual approval!"
